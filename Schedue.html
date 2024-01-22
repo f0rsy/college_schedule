@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Расписание занятий</title>
+    <link type="image/x-icon" href="https://spk.arvesso.fun/img/favicon.ico" rel="shortcut icon">
+    <link type="Image/x-icon" href="https://spk.arvesso.fun/img/favicon.ico" rel="icon">
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <link rel="stylesheet" href="schedule_light_newYear.css" id="theme-link">
+    <link rel="stylesheet" href="./event.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.bootstrap3.min.css"
+        rel="stylesheet" />
+
+</head>
+
+<body class="d-flex flex-column">
+    <header class="justify-content-between">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm ">
+            <div class="container d-flex justify-content-between">
+                <a href="http://www.sovprocollege.ru/" target="_blank"><img class="logo" src="logo_light.svg"
+                        id="logo-image"></a>
+                <div class="radio-input">
+                    <label>
+                        <input type="radio" id="value-1" name="value-radio" value="value-1">
+                        <span>Светлая</span>
+                    </label>
+                    <label>
+                        <input type="radio" id="value-2" name="value-radio" value="value-2">
+                        <span>Авто</span>
+                    </label>
+                    <label>
+                        <input type="radio" id="value-3" name="value-radio" value="value-3">
+                        <span>Тёмная</span>
+                    </label>
+                    <span class="selection"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <ul id="wire"></ul>
+    <div class="container flex-grow-1 top">
+        <h1>Расписание занятий с 20.11.2023 по 26.11.2023</h1>
+        <p>Последнее обновление 20 ноября 21:55</p>
+        <form class="selectors" id="selectOptions">
+            <div class="row">
+                <div class="col-12 col-md-3 mb-3">
+                    <input type="text" id="input-group" placeholder="Выберите день">
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <input type="text" id="input-teacher" placeholder="Выберите день">
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <input type="text" id="input-class" placeholder="Выберите день">
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <select class="form-select" id="daySelect" name="DayOfWeek">
+                        <option value="Current">Сегодня</option>
+                        <option value="Monday">Понедельник</option>
+                        <option value="Tuesday">Вторник</option>
+                        <option value="Wednesday">Среда</option>
+                        <option value="Thursday">Четверг</option>
+                        <option value="Friday">Пятница</option>
+                        <option value="Saturday">Суббота</option>
+                        <option value="AllWeek">За всю неделю</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 col-md-3 mb-3">
+                    <button type="button" class="btn btn-primary-show w-100" id="showScheduleBtn" style="opacity: 1;">
+                        <div class="button-content">
+                            <span id="showButtonText" style="opacity: 1;">Показать</span>
+                            <div class="spinner" id="loader" style="display: none; opacity: 0;">
+                                <svg viewBox="25 25 50 50" class="circular">
+                                    <circle stroke-miterlimit="10" stroke-width="3" fill="none" r="20" cy="50" cx="50"
+                                        class="path"></circle>
+                                </svg>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <button type="button" class="btn btn-secondary-hide w-100" id="returnBtn"
+                        style="display: none; opacity: 0;">Вернуться</button>
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+
+            <div class="alert alert-danger" role="alert" id="errorPanel" style="display: none">
+                Во время выполнения запроса произошла ошибка, попробуйте позже или сообщите <a class="alert-link"
+                    href="https://vk.com/arvesso">сюда</a>
+            </div>
+        </form>
+        <div class="table-responsive scheduleView" id="scheduleContainer" style="display:none; opacity: 0;">
+        </div>
+    </div>
+
+
+    <div id="toasts-container">
+    </div>
+
+    <div class="modal fade" id="bugReportModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Сообщить о проблеме</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bugReportForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="bugTitle">Ваш vk или telegram для обратной связи<a
+                                    style="color: red">*</a></label>
+                            <input type="text" class="form-control" id="bugTitle" name="bugTitle">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="bugDescription">Подробное описание ошибки<a style="color: red">*</a></label>
+                            <textarea class="form-control" id="bugDescription" name="bugDescription"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" form="bugReportForm" class="btn btn-primary">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="timer ">
+            <h1>До Новго года осталось:</h1>
+            <div id="countdown"></div>
+        </div>
+    </div>
+
+
+    <footer class="border-top footer mt-auto">
+        <div class="container d-flex justify-content-between">
+            <div>
+                <a href="https://spk.arvesso.fun/Developers" target="_blank"
+                    style="text-decoration: none">Разработчики</a>
+            </div>
+            <a href="https://t.me/Aveiro_IE_bot" target="_blank"><img class="telegram" src="Vector.svg"
+                    id="header-image"></a>
+            <div>
+                <a href="https://spk.arvesso.fun/schedule#" id="reportBugBtn" data-bs-toggle="modal"
+                    data-bs-target="#bugReportModal" style="text-decoration: none">Сообщить об ошибке</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./jquery.min.js"></script>
+    <script src="./bootstrap.bundle.min.js"></script>
+    <script src="./schedule.js"></script>
+    <script src="./event.js"></script>
+    <script src="./bugreport.js"></script>
+    <script src="lamps.js"></script>
+    <script src="selector.js"></script>
+    <script src="timer.js"></script>
+    <script src="swithc.js"></script>
+    <script src="snow.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Selectize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/standalone/selectize.min.js"></script>
+
+</body>
+
+</html>
